@@ -1,0 +1,36 @@
+service: billing2slack
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage, self:custom.defaultStage}
+  # The Cost Explorer API has Virginia-only restrictions
+  region: us-east-1
+
+  memorySize: 128
+  timeout: 10
+
+  environment:
+    SLACK_WEBHOOK_URL: ${ssm:SLACK_WEBHOOK_URL}
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ce:GetCostAndUsage"
+      Resource:
+        - "*"
+
+custom:
+  defaultStage: dev
+  environment:
+    dev: ${file(./env/dev.yaml)}
+    stg: ${file(./env/stg.yaml)}
+    prod: ${file(./env/prod.yaml)}
+
+functions:
+  app:
+    handler: main.lambda_handler
+    environment: ${self:custom.environment.${self:provider.stage}}
+    events:
+      # note: GMT
+      - schedule: cron(30 0 * * ? *)
