@@ -6,15 +6,13 @@ It's designed to increase cost awareness by looking at your daily AWS usage.
 
 The python code is very simple, about 100 lines, and even including serverless.yaml, it is less than 150 lines in total.
 
-<!-- TODO: 投稿イメージを貼る -->
+![sample](sample_image.png)
 
 ## Architecure
 
 Start Lambda at the time specified in the CloudWatch Event and post the Slack channel.
 
-```:bash
-CloudWatch Event -> Lambda -> Slack
-```
+![image](archtecture.png)
 
 ## Setup
 
